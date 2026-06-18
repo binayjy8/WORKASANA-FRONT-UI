@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-
+import RegisterPage from "./pages/auth/RegisterPage";
 import LoginPage from "./pages/auth/LoginPage";
 import DashboardPage from "./pages/dashboard/DashboardPage";
 import TasksPage from "./pages/tasks/TasksPage";
@@ -13,7 +13,7 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 function App() {
   return (
     <Routes>
-      {/* Public Route */}
+      <Route path="/register" element={<RegisterPage />} />
       <Route path="/" element={<LoginPage />} />
 
       {/* Protected Routes */}
