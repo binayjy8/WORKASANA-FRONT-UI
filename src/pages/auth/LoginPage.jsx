@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { login } from "../../services/authServices";
 
 
@@ -11,6 +12,7 @@ function LoginPage() {
     password: "",
   });
 
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -59,14 +61,31 @@ function LoginPage() {
             className="w-full border p-3 rounded-lg"
           />
 
-          <input
-            type="password"
-            name="password"
-            placeholder="Enter password"
-            value={formData.password}
-            onChange={handleChange}
-            className="w-full border p-3 rounded-lg"
-          />
+          <div className="relative">
+              <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="Enter Password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  className="w-full border p-3 rounded-lg focus:ring-2 focus:ring-black outline-none pr-12"
+              />
+
+              <button
+              type="button"
+              onClick={() =>
+              setShowPassword(!showPassword)
+              }
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500"
+              >
+            {showPassword ? (
+            <FaEyeSlash />
+            ) : (
+             <FaEye />
+              )}
+            </button>
+          </div>
 
           {error && (
             <p className="text-red-500 text-sm">
