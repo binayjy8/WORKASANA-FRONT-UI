@@ -1,7 +1,12 @@
 import API from "../api/axios";
 
 export const getProjects = async () => {
-  const response = await API.get("/projects");
+  const response = await API.get("/projects", {
+    headers: {
+      "Cache-Control": "no-cache",
+      Pragma: "no-cache",
+    },
+  });
   return response.data;
 };
 

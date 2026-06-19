@@ -1,27 +1,28 @@
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { updateTask } from "../../services/taskService";
 
 function EditTaskModal({
   isOpen,
   onClose,
   task,
-  projects,
-  teams,
-  users,
+  projects = [],
+  teams = [],
+  users = [],
   refreshTasks,
 }) {
-  const [formData, setFormData] = useState({
+  const initialState = {
     name: "",
     project: "",
     team: "",
     owners: [],
-    tags: [],
     priority: "Medium",
     status: "To Do",
     dueDate: "",
     timeToComplete: 1,
-  });
+  };
 
+  const [formData, setFormData] = useState(initialState);
   const [tagsInput, setTagsInput] = useState("");
 
   useEffect(() => {
@@ -31,44 +32,46 @@ function EditTaskModal({
         project: task.project?._id || "",
         team: task.team?._id || "",
         owners: task.owners?.map((owner) => owner._id) || [],
-        tags: task.tags || [],
         priority: task.priority || "Medium",
         status: task.status || "To Do",
         dueDate: task.dueDate
-          ? new Date(task.dueDate)
-              .toISOString()
-              .split("T")[0]
+          ? new Date(task.dueDate).toISOString().split("T")[0]
           : "",
         timeToComplete: task.timeToComplete || 1,
       });
 
-      setTagsInput(
-        task.tags?.join(", ") || ""
-      );
+      setTagsInput(task.tags?.join(", ") || "");
     }
   }, [task]);
+
+  const handleChange = (field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!formData.name.trim()) {
-      alert("Task Name is required");
-      return;
+      return toast.error("Task Name is required");
+    }
+
+    if (/^\d+$/.test(formData.name.trim())) {
+      return toast.error("Task Name cannot be only numbers");
     }
 
     if (!formData.project) {
-      alert("Please select a project.");
-      return;
+      return toast.error("Please select a project");
     }
 
     if (!formData.team) {
-      alert("Please select a team.");
-      return;
+      return toast.error("Please select a team");
     }
 
     if (formData.owners.length === 0) {
-      alert("Please select an owner.");
-      return;
+      return toast.error("Please select an owner");
     }
 
     const updatedData = {
@@ -80,22 +83,15 @@ function EditTaskModal({
     };
 
     try {
-      console.log(
-        "FORM DATA SENT:",
-        updatedData
-      );
+      await updateTask(task._id, updatedData);
 
-      await updateTask(
-        task._id,
-        updatedData
-      );
+      toast.success("Task Updated Successfully");
 
       refreshTasks();
       onClose();
     } catch (error) {
-      console.log("UPDATE ERROR:");
-      console.log(
-        error.response?.data || error
+      toast.error(
+        error.response?.data?.message || "Failed to update task"
       );
     }
   };
@@ -103,50 +99,33 @@ function EditTaskModal({
   if (!isOpen || !task) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center">
-      <div className="bg-white w-[500px] max-h-[80vh] overflow-y-auto rounded-xl p-5 shadow-xl">
-
-        <h2 className="text-2xl font-bold mb-5">
+    <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center px-4">
+      <div className="bg-white w-full max-w-md md:max-w-lg max-h-[85vh] overflow-y-auto rounded-xl p-6 shadow-xl">
+        <h2 className="text-2xl font-bold mb-6 text-center">
           Edit Task
         </h2>
 
-        <form
-          onSubmit={handleSubmit}
-          className="space-y-4"
-        >
-
+        <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
-            value={formData.name}
             placeholder="Task Name"
-            className="w-full border p-3 rounded-lg"
+            value={formData.name}
             onChange={(e) =>
-              setFormData({
-                ...formData,
-                name: e.target.value,
-              })
+              handleChange("name", e.target.value)
             }
+            className="w-full border p-3 rounded-lg outline-none focus:ring-2 focus:ring-black"
           />
 
           <select
             value={formData.project}
-            className="w-full border p-3 rounded-lg"
             onChange={(e) =>
-              setFormData({
-                ...formData,
-                project: e.target.value,
-              })
+              handleChange("project", e.target.value)
             }
+            className="w-full border p-3 rounded-lg"
           >
-            <option value="">
-              Select Project
-            </option>
-
+            <option value="">Select Project</option>
             {projects.map((project) => (
-              <option
-                key={project._id}
-                value={project._id}
-              >
+              <option key={project._id} value={project._id}>
                 {project.name}
               </option>
             ))}
@@ -154,23 +133,14 @@ function EditTaskModal({
 
           <select
             value={formData.team}
-            className="w-full border p-3 rounded-lg"
             onChange={(e) =>
-              setFormData({
-                ...formData,
-                team: e.target.value,
-              })
+              handleChange("team", e.target.value)
             }
+            className="w-full border p-3 rounded-lg"
           >
-            <option value="">
-              Select Team
-            </option>
-
+            <option value="">Select Team</option>
             {teams.map((team) => (
-              <option
-                key={team._id}
-                value={team._id}
-              >
+              <option key={team._id} value={team._id}>
                 {team.name}
               </option>
             ))}
@@ -178,136 +148,92 @@ function EditTaskModal({
 
           <select
             value={formData.owners[0] || ""}
-            className="w-full border p-3 rounded-lg"
             onChange={(e) =>
-              setFormData({
-                ...formData,
-                owners: [e.target.value],
-              })
+              handleChange("owners", [e.target.value])
             }
-          >
-            <option value="">
-              Select Owner
-            </option>
-
-            {users.map((user) => (
-              <option
-                key={user._id}
-                value={user._id}
-              >
-                {user.name}
-              </option>
-            ))}
-          </select>
-
-          <select
-            value={formData.status}
             className="w-full border p-3 rounded-lg"
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                status: e.target.value,
-              })
-            }
           >
-            <option value="To Do">
-              To Do
-            </option>
-
-            <option value="In Progress">
-              In Progress
-            </option>
-
-            <option value="Completed">
-              Completed
-            </option>
-
-            <option value="Blocked">
-              Blocked
-            </option>
+            <option value="">Select Owner</option>
+            {users
+              ?.filter(
+                (user) =>
+                  user?.name && user.name.trim() !== ""
+              )
+              .map((user) => (
+                <option key={user._id} value={user._id}>
+                  {user.name.trim()}
+                </option>
+              ))}
           </select>
 
           <select
             value={formData.priority}
-            className="w-full border p-3 rounded-lg"
             onChange={(e) =>
-              setFormData({
-                ...formData,
-                priority: e.target.value,
-              })
+              handleChange("priority", e.target.value)
             }
+            className="w-full border p-3 rounded-lg"
           >
-            <option value="Low">
-              Low
-            </option>
-
-            <option value="Medium">
-              Medium
-            </option>
-
-            <option value="High">
-              High
-            </option>
+            <option>Low</option>
+            <option>Medium</option>
+            <option>High</option>
           </select>
+
+          <select
+            value={formData.status}
+            onChange={(e) =>
+              handleChange("status", e.target.value)
+            }
+            className="w-full border p-3 rounded-lg"
+          >
+            <option>To Do</option>
+            <option>In Progress</option>
+            <option>Completed</option>
+          </select>
+
+          <input
+            type="date"
+            value={formData.dueDate}
+            onChange={(e) =>
+              handleChange("dueDate", e.target.value)
+            }
+            className="w-full border p-3 rounded-lg"
+          />
 
           <input
             type="number"
             min="1"
             value={formData.timeToComplete}
-            className="w-full border p-3 rounded-lg"
             onChange={(e) =>
-              setFormData({
-                ...formData,
-                timeToComplete: Number(
-                  e.target.value
-                ),
-              })
+              handleChange("timeToComplete", e.target.value)
             }
-          />
-
-          <input
-            type="date"
-            value={formData.dueDate}
             className="w-full border p-3 rounded-lg"
-            onChange={(e) =>
-              setFormData({
-                ...formData,
-                dueDate: e.target.value,
-              })
-            }
           />
 
           <input
             type="text"
-            placeholder="Tags (Ex: Urgent, Backend, API)"
+            placeholder="Tags (Urgent, Backend)"
             value={tagsInput}
+            onChange={(e) => setTagsInput(e.target.value)}
             className="w-full border p-3 rounded-lg"
-            onChange={(e) =>
-              setTagsInput(e.target.value)
-            }
           />
 
           <div className="flex justify-end gap-3 pt-4">
-
             <button
               type="button"
               onClick={onClose}
-              className="border px-4 py-2 rounded-lg"
+              className="border px-4 py-2 rounded-lg hover:bg-gray-100"
             >
               Cancel
             </button>
 
             <button
               type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+              className="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800"
             >
               Update Task
             </button>
-
           </div>
-
         </form>
-
       </div>
     </div>
   );
