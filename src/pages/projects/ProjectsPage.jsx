@@ -41,26 +41,28 @@ function ProjectsPage() {
     }
   };
 
-  const handleDelete = async (id) => {
-    const confirmDelete = window.confirm(
-      "Delete this project?"
+const handleDelete = async (id) => {
+  const confirmDelete = window.confirm(
+    "Delete this project?"
+  );
+
+  if (!confirmDelete) return;
+
+  try {
+    await deleteProject(id);
+    setProjects((prev) =>
+      prev.filter(
+        (project) => project._id !== id
+      )
     );
 
-    if (!confirmDelete) return;
-
-    try {
-      await deleteProject(id);
-
-      // Force refresh from backend
-      setRefreshKey((prev) => prev + 1);
-
-      toast.success(
-        "Project deleted successfully"
-      );
-    } catch (error) {
-      toast.error("Failed to delete project");
-    }
-  };
+    toast.success(
+      "Project deleted successfully"
+    );
+  } catch (error) {
+    toast.error("Failed to delete project");
+  }
+};
 
   const handleEdit = (project) => {
     setSelectedProject(project);
