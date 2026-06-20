@@ -1,92 +1,274 @@
-# Workasana
+# Workasana Frontend
 
-Workasana is a full-stack project management and task tracking platform designed to help teams organize projects, manage workloads, and monitor progress efficiently.
+## Project Overview
 
-## What This Application Can Do
+Workasana Frontend is the client-side application of the Workasana Project Management System. It provides a responsive and user-friendly interface to manage projects, tasks, teams, and reports.
 
-### User Authentication
+Users can create projects, assign tasks, manage teams, track progress, and visualize reports in a single platform.
 
-* Secure user login
-* Protected routes for authenticated users
+---
 
-### Dashboard
+## Features
 
-* View overall project statistics
-* Monitor task completion progress
-* See ongoing projects
-* Track team and task metrics
+* User Authentication (Login / Register)
+* Dashboard Overview
+* Create, Edit, Delete Projects
+* Create, Edit, Delete Tasks
+* Team Management
+* Task Assignment to Owners
+* Search Projects
+* Task Status Tracking
+* Reports Dashboard with Charts
+* Responsive Sidebar Navigation
+* Protected Routes
+* Toast Notifications
+* Project Details Page
+* Mobile Responsive Design
 
-### Task Management
-
-* Create new tasks
-* Edit existing tasks
-* Delete tasks
-* Assign tasks to team members
-* Set task priorities (Low, Medium, High)
-* Track task status (To Do, In Progress, Completed, Blocked)
-* Add due dates
-* Add and manage tags
-* Mark tasks as completed
-
-### Project Management
-
-* Create projects
-* Update project details
-* Delete projects
-* View project-specific tasks
-* Filter tasks by owner, tag, and due date
-
-### Team Management
-
-* Create teams
-* Edit teams
-* Delete teams
-* Organize work by teams
-
-### Reports & Analytics
-
-* View task completion metrics
-* Analyze pending and blocked tasks
-* Monitor team productivity
-* Track owner workload distribution
-* Visualize data using charts and graphs
-
-### Search & Filtering
-
-* Search tasks quickly
-* Filter tasks by status
-* Filter project tasks by owner
-* Filter project tasks by tags
-* Filter project tasks by due date
-
-### Responsive Design
-
-* Mobile-friendly interface
-* Responsive sidebar navigation
-* Optimized layouts for desktop and mobile devices
+---
 
 ## Tech Stack
 
-### Frontend
-
 * React.js
-* React Router DOM
 * Tailwind CSS
-* Recharts
+* React Router DOM
 * Axios
+* React Toastify
+* Recharts
 
-### Backend
+---
 
-* Node.js
-* Express.js
+## Quick Start
 
-### Database
+### Clone Repository
 
-* MongoDB
-* Mongoose
+```bash
+git clone YOUR_FRONTEND_GITHUB_LINK
+cd workasana-frontend
+```
+
+### Install Dependencies
+
+```bash
+npm install
+```
+
+### Run Project
+
+```bash
+npm run dev
+```
+
+---
+
+## API Reference
 
 ### Authentication
 
-* JWT (JSON Web Tokens)
+#### Login User
+
+```http
+POST /api/auth/login
+```
+
+Sample Request:
+
+```json
+{
+  "email": "string",
+  "password": "string"
+}
+```
+
+Sample Response:
+
+```json
+{
+  "message": "string",
+  "token": "string"
+}
+```
+
+---
+
+#### Register User
+
+```http
+POST /api/auth/register
+```
+
+Sample Request:
+
+```json
+{
+  "name": "string",
+  "email": "string",
+  "password": "string"
+}
+```
+
+Sample Response:
+
+```json
+{
+  "message": "string",
+  "user": {
+    "id": "string",
+    "name": "string",
+    "email": "string"
+  }
+}
+```
+
+---
+
+### Projects
+
+#### Get Projects
+
+```http
+GET /api/projects
+```
+
+Sample Response:
+
+```json
+[
+  {
+    "_id": "string",
+    "name": "string",
+    "description": "string"
+  }
+]
+```
+
+---
+
+#### Create Project
+
+```http
+POST /api/projects
+```
+
+Sample Request:
+
+```json
+{
+  "name": "string",
+  "description": "string"
+}
+```
+
+---
+
+### Tasks
+
+#### Get Tasks
+
+```http
+GET /api/tasks
+```
+
+Sample Response:
+
+```json
+{
+  "tasks": [
+    {
+      "_id": "string",
+      "name": "string",
+      "status": "string",
+      "priority": "string",
+      "timeToComplete": "number"
+    }
+  ]
+}
+```
+
+---
+
+#### Create Task
+
+```http
+POST /api/tasks
+```
+
+Sample Request:
+
+```json
+{
+  "name": "string",
+  "project": "string",
+  "team": "string",
+  "owners": ["string"],
+  "priority": "string",
+  "status": "string",
+  "dueDate": "date",
+  "timeToComplete": "number",
+  "tags": ["string"]
+}
+```
+
+---
+
+### Teams
+
+#### Get Teams
+
+```http
+GET /api/teams
+```
+
+Sample Response:
+
+```json
+[
+  {
+    "_id": "string",
+    "name": "string"
+  }
+]
+```
+
+---
+
+## Screenshots
+
+Add screenshots here:
+
+* Login Page
+* Register Page
+* Dashboard
+* Projects Page
+* Tasks Page
+* Teams Page
+* Reports Page
+* Mobile View
+
+---
+
+## Live Working Link
+
+Frontend Live URL:
+[https://workasana-front-ui.vercel.app/]
+
+Backend Live URL:
+
+[https://workasana-backend-iota.vercel.app/]
+
+---
+
+## Demo Video
+
+Demo Video Link:
+
+[https://drive.google.com/file/d/11Vv6l04D8H7sOVhT4mcAH7SY-6vahiTd/view?usp=drive_link]
+
+---
+
+## Author
+
+Developed by **Binaybhusan Mohanta**
+
 
 
