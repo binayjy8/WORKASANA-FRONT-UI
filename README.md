@@ -43,7 +43,7 @@ Users can create projects, assign tasks, manage teams, track progress, and visua
 ### Clone Repository
 
 ```bash
-git clone YOUR_FRONTEND_GITHUB_LINK
+git clone https://github.com/binayjy8/WORKASANA-FRONT-UI.git
 cd workasana-frontend
 ```
 
@@ -269,6 +269,10 @@ Demo Video Link:
 ## Author
 
 Developed by **Binaybhusan Mohanta**
+
+## Contact
+
+Email: [mohantabinaybhusan@gmail.com]
 
 
 
