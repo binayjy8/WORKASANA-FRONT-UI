@@ -43,7 +43,7 @@ Users can create projects, assign tasks, manage teams, track progress, and visua
 ### Clone Repository
 
 ```bash
-git clone https://github.com/binayjy8/WORKASANA-FRONT-UI.git
+git clone [https://github.com/binayjy8/WORKASANA-FRONT-UI.git]
 cd workasana-frontend
 ```
 
